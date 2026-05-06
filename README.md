@@ -125,3 +125,49 @@ Insight Principali:
 - **Il Valore della Nicchia Tecnica**: Le skill meglio pagate appartengono a settori specifici come lo sviluppo software/DevOps (bitbucket, gitlab, ansible), il Web3 (solidity) o l'AI avanzata (hugging face). Questo suggerisce che un Data Analyst che "ibrida" le proprie competenze con l'ingegneria del software o la blockchain ottiene un premio salariale altissimo.
 - **Saturazione delle Skill di Base**: Competenze come Excel, PowerPoint e Word sono ancora tra le prime 10 per richiesta, ma sono le meno pagate della lista (sotto i $90k). Questo indica che sono considerate "requisiti minimi" e non offrono potere contrattuale per stipendi elevati.
 - **Predominanza dell'Ecosistema R per l'Analisi Avanzata**: È interessante notare che, sebbene Python sia la skill più richiesta in assoluto, è la libreria di R "dplyr" a guidare la classifica degli stipendi. Ciò suggerisce che, per ruoli di analisi statistica pura e complessa, la specializzazione in R può essere finanziariamente più vantaggiosa rispetto alla conoscenza generalista di Python.
+
+# 4. Qual è la competenza più ottimale da acquisire per un analista di dati? 
+
+Abbiamo raggruppato le competenze per determinare lo stipendio mediano e la probabilità di essere inclusi nell'annuncio. Successivamente, abbiamo visualizzato lo stipendio mediano rispetto alla percentuale di domanda di competenze con un grafico a dispersione, aggiungendo etichette per ogni punto usando la libreria adjustText per evitare sovrapposizioni.
+
+```python
+%config InlineBackend.figure_format = 'retina'
+from adjustText import adjust_text
+
+# Ingrandiamo la figura per dare più spazio alle etichette
+plt.figure(figsize=(8, 5))
+
+# Scatterplot
+sns.scatterplot(data=df_DA_skills_hight_demand, y='median_salary', x='skill_percent', hue=df_DA_skills_hight_demand.index, palette='tab10')
+sns.despine()
+
+plt.title('Median Salary vs. Skill Demand for Data Analysts in the US')
+plt.xlabel('Skill Demand')
+plt.ylabel('Median Salary (USD)')
+plt.legend().remove()
+
+# Aggiunta di etichette per ogni punto usando adjustText
+texts = []
+for i, row in df_DA_skills_hight_demand.iterrows():
+    texts.append(plt.text(row['skill_percent'], row['median_salary'], i)) # type: ignore
+
+# adjust_text funziona meglio se ha abbastanza spazio. Torniamo a valori più conservativi o default.
+adjust_text(texts, 
+            arrowprops=dict(arrowstyle='->', color='grey', lw=0.8))
+
+ax = plt.gca()
+ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{x:.0f}%')) # formatta l'asse x per mostrare le percentuali
+ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f'${int(x/1000)}K')) # formatta l'asse y per mostrare i salari in migliaia di dollari
+
+plt.tight_layout()
+```
+
+![Median Salary vs. Skill Demand for Data Analysts in the US](3_Progetto/images/optimal_skills_scatterplot.svg)
+
+Insight Principali:
+
+1. **Python è il "Gold Standard"**: Python si posiziona nell'angolo in alto a destra del quadrante ottimale. Combina una domanda elevata (oltre il 30%) con uno dei salari medi più alti del dataset (vicino ai $98K). È chiaramente la competenza più remunerativa tra quelle ad alta diffusione.
+2. **SQL: Alta Domanda, Salario Competitivo**: SQL è la competenza più richiesta in assoluto, apparendo in quasi il 60% delle offerte di lavoro. Sebbene il salario medio (circa $91K) sia leggermente inferiore a quello di Python o Oracle, la sua ubiquità la rende una competenza fondamentale e imprescindibile per entrare nel mercato.
+3. **Strumenti Office: Bassa Specializzazione, Basso Salario**
+Esiste una correlazione chiara tra la semplicità degli strumenti e la retribuzione. Excel, PowerPoint e Word si trovano nella parte bassa del grafico. Nonostante Excel sia molto richiesto (oltre il 40%), offre il salario tra i più bassi (circa $84K), indicando che queste sono considerate "competenze di base" piuttosto che specialistiche.
+4. **Il valore della Visualizzazione Dati (Tableau vs Power BI)** Il grafico mostra un vantaggio competitivo per Tableau rispetto a Power BI. Tableau non solo ha una domanda leggermente superiore (circa 32% contro 20%), ma garantisce anche un salario medio più alto (circa $93K contro $90K), suggerendo che il mercato attuale premi maggiormente la specializzazione nell'ecosistema Tableau.
