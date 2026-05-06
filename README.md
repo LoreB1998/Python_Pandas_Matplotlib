@@ -38,6 +38,7 @@ Insight Principali:
 Per analizzare il trend di crescita delle competenze più richieste per i Data Analyst negli USA, abbiamo calcolato la percentuale di ogni competenza rispetto al totale dei lavori per i Data Analyst in ogni mese. Successivamente, abbiamo visualizzato i risultati con un grafico a linee che mostra l'andamento delle top 5 competenze nel tempo.
 
 ```python
+df_plot = df_DA_US_perc.iloc[:, :5]
 sns.lineplot(data=df_plot, markers=True, palette='tab10', dashes=False)
 sns.set_theme(style='ticks')
 sns.despine() # rimuove le spine per un look più pulito
@@ -52,6 +53,7 @@ plt.legend().remove()
 plt.xticks(rotation=45)
 plt.tight_layout()
 ```
+
 ![Trend of Top 5 Skills for Data Analysts in USA](3_Progetto/images/skills_trend_top5.svg)
 
 Insight Principali:
@@ -59,3 +61,67 @@ Insight Principali:
 - **Stabilità e crescita di Excel**: Excel occupa saldamente la seconda posizione. È interessante notare il trend positivo nell'ultimo trimestre (da ottobre a dicembre), dove recupera terreno suggerendo che la padronanza dei fogli di calcolo rimane un pilastro imprescindibile accanto a linguaggi più complessi.
 - **Competizione tra Python e Tableau**: Queste due competenze mostrano un andamento quasi sovrapponibile per gran parte dell'anno, oscillando tra il 25% e il 35%. Ciò indica che per un Data Analyst la capacità di programmazione (Python) e quella di visualizzazione dati (Tableau) hanno un peso specifico molto simile sul mercato.
 - **Power BI in crescita costante**: Sebbene sia all'ultimo posto tra le "Top 5", Power BI mostra una crescita graduale e una maggiore stabilità rispetto alla volatilità di Python. Questo suggerisce una crescente adozione degli strumenti dell'ecosistema Microsoft nelle aziende americane.
+
+# 3. Quando bene sono pagati i diversi lavori e le diverse skill?
+
+## 3.1 Analisi per i top 6 lavori più pagati negli USA
+Per analizzare quanto bene sono pagati i diversi lavori, abbiamo filtrato il dataset per i lavori negli USA e abbiamo selezionato i top 6 titoli di lavoro più pagati. Successivamente, abbiamo calcolato la retribuzione mediana per ciascun titolo di lavoro e abbiamo visualizzato i risultati con un grafico a barre ordinato in base alla retribuzione mediana.
+
+```python
+df_plot = df_DA_US_perc.iloc[:, :5]
+sns.lineplot(data=df_plot, markers=True, palette='tab10', dashes=False)
+sns.set_theme(style='ticks')
+sns.despine() # rimuove le spine per un look più pulito
+plt.title('Trend of Top 5 Skills for Data Analysts in USA', fontsize=16)
+plt.xlabel('Month', fontsize=12)
+plt.ylabel('Percentage of Job Postings', fontsize=12)
+for i in range(5):
+    plt.text(11.3, df_plot.iloc[-1, i], df_plot.columns[i], color=sns.color_palette('tab10')[i], fontsize=10)
+ax = plt.gca()
+ax.yaxis.set_major_formatter(PercentFormatter(decimals=0))
+plt.legend().remove()
+plt.xticks(rotation=45)
+plt.tight_layout()
+```
+![Top 6 Jobs Salary](3_Progetto/images/salary_distribution.svg)
+
+Insight Principali:
+
+- **Gerarchia dei ruoli Senior**: I ruoli "Senior" (Data Scientist, Data Engineer, Data Analyst) mostrano costantemente una mediana salariale più alta e un range interquartile più ampio rispetto alle loro controparti junior, confermando che l'esperienza è un fattore determinante per l'incremento retributivo.
+- **Vantaggio economico dei Data Scientist**: Il ruolo di Senior Data Scientist emerge come il più remunerativo, con la mediana più alta e una distribuzione che si spinge frequentemente verso i $300k - $400k, superando leggermente i Senior Data Engineer.
+- **Presenza di Outlier elevati**: Tutti i ruoli analizzati presentano numerosi "outlier" (valori anomali) nella fascia alta, con punte che raggiungono i $600k per i Data Scientist. Questo indica che, sebbene la maggior parte degli stipendi si concentri tra $100k e $200k, esiste una fetta di mercato "top-tier" con compensi eccezionalmente elevati.
+
+## 3.2 Analisi per le skill più pagate per i Data Analyst negli USA
+
+Per analizzare quanto bene sono pagate le diverse skill per i Data Analyst negli USA, abbiamo filtrato il dataset per i lavori di Data Analyst negli USA e abbiamo esploso la colonna delle competenze. Successivamente, abbiamo calcolato la retribuzione mediana per ciascuna competenza e abbiamo visualizzato i risultati con un grafico a barre ordinato in base alla retribuzione mediana.
+
+```python
+fig, axes = plt.subplots(2, 1)
+sns.set_theme(style="ticks")
+
+sns.barplot(data=df_DA_top_pay, x='median', y=df_DA_top_pay.index, ax=axes[0], hue='median', palette='dark:b_r')
+axes[0].set_title("Top 10 Highest Paid Skills for Data Analysts in the US")
+axes[0].legend_.remove() # rimuove la legenda
+axes[0].set_ylabel("")
+axes[0].set_xlabel("")
+axes[0].xaxis.set_major_formatter(FuncFormatter(lambda x, _: f'${int(x/1000)}K')) # formatta l'asse x per mostrare i salari in migliaia di dollari
+
+
+sns.barplot(data=df_DA_top_skills, x='median', y=df_DA_top_skills.index, ax=axes[1], hue='median', palette='light:b')
+axes[1].set_title("Top 10 Most Required Skills for Data Analysts in the US")
+axes[1].legend_.remove() # rimuove la legenda
+axes[1].set_ylabel("")
+axes[1].set_xlabel("Median Yearly Salary ($USD)")
+axes[1].xaxis.set_major_formatter(FuncFormatter(lambda x, _: f'${int(x/1000)}K')) # formatta l'asse x per mostrare i salari in migliaia di dollari
+axes[1].set_xlim(axes[0].get_xlim()) # allinea l'asse x del secondo grafico a quello del primo
+fig.tight_layout()
+```
+
+![Top Skills Salary](3_Progetto/images/skills_salary_comparison.svg)
+
+Insight Principali:
+
+- **Discrepanza tra Popolarità e Retribuzione**: Esiste una netta separazione tra le skill "standard" e quelle "lucrative". Le competenze più richieste (Python, Tableau, SQL) hanno stipendi medi che si aggirano tra gli $80k e i $100k, mentre le skill di nicchia o specialistiche superano facilmente i $150k, arrivando quasi a $200k con dplyr.
+- **Il Valore della Nicchia Tecnica**: Le skill meglio pagate appartengono a settori specifici come lo sviluppo software/DevOps (bitbucket, gitlab, ansible), il Web3 (solidity) o l'AI avanzata (hugging face). Questo suggerisce che un Data Analyst che "ibrida" le proprie competenze con l'ingegneria del software o la blockchain ottiene un premio salariale altissimo.
+- **Saturazione delle Skill di Base**: Competenze come Excel, PowerPoint e Word sono ancora tra le prime 10 per richiesta, ma sono le meno pagate della lista (sotto i $90k). Questo indica che sono considerate "requisiti minimi" e non offrono potere contrattuale per stipendi elevati.
+- **Predominanza dell'Ecosistema R per l'Analisi Avanzata**: È interessante notare che, sebbene Python sia la skill più richiesta in assoluto, è la libreria di R "dplyr" a guidare la classifica degli stipendi. Ciò suggerisce che, per ruoli di analisi statistica pura e complessa, la specializzazione in R può essere finanziariamente più vantaggiosa rispetto alla conoscenza generalista di Python.
