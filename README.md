@@ -29,6 +29,33 @@ fig.tight_layout(h_pad=1)
 ![Skills per Job Title](3_Progetto/images/skills_perc_job_title.svg)
 
 Insight Principali:
-- Il predominio di SQL e Python: SQL è la competenza più richiesta per i Data Engineer (68%) e i Data Analyst (51%), mentre Python domina incontrastato per i Data Scientist con una percentuale del 72%. Questi due linguaggi si confermano le fondamenta essenziali dell'ecosistema dati.
-- Si nota una netta distinzione nelle skill secondarie: i Data Analyst fanno grande affidamento su Excel (41%) e strumenti di BI come Tableau, mentre i Data Engineer si focalizzano su infrastrutture cloud come AWS (43%) e tecnologie per big data come Spark.
-- Solo per i Data Scientist e i Data Analyst compaiono linguaggi orientati all'analisi statistica pura come R (44%) e SAS, evidenziando una sovrapposizione tra questi due ruoli che invece non compare nel profilo più tecnico e infrastrutturale del Data Engineer.
+- **Il predominio di SQL e Python**: SQL è la competenza più richiesta per i Data Engineer (68%) e i Data Analyst (51%), mentre Python domina incontrastato per i Data Scientist con una percentuale del 72%. Questi due linguaggi si confermano le fondamenta essenziali dell'ecosistema dati.
+- **Differenze nei tool secondari**: i Data Analyst fanno grande affidamento su Excel (41%) e strumenti di BI come Tableau, mentre i Data Engineer si focalizzano su infrastrutture cloud come AWS (43%) e tecnologie per big data come Spark.
+- **Sovrapposizione tra Data Scientist e Data Analyst**: Solo per i Data Scientist e i Data Analyst compaiono linguaggi orientati all'analisi statistica pura come R (44%) e SAS, evidenziando una sovrapposizione tra questi due ruoli che invece non compare nel profilo più tecnico e infrastrutturale del Data Engineer.
+
+# 2. Qual è il trend di crescita delle competenze più richieste per i Data Analyst negli USA?
+
+Per analizzare il trend di crescita delle competenze più richieste per i Data Analyst negli USA, abbiamo calcolato la percentuale di ogni competenza rispetto al totale dei lavori per i Data Analyst in ogni mese. Successivamente, abbiamo visualizzato i risultati con un grafico a linee che mostra l'andamento delle top 5 competenze nel tempo.
+
+```python
+sns.lineplot(data=df_plot, markers=True, palette='tab10', dashes=False)
+sns.set_theme(style='ticks')
+sns.despine() # rimuove le spine per un look più pulito
+plt.title('Trend of Top 5 Skills for Data Analysts in USA', fontsize=16)
+plt.xlabel('Month', fontsize=12)
+plt.ylabel('Percentage of Job Postings', fontsize=12)
+for i in range(5):
+    plt.text(11.3, df_plot.iloc[-1, i], df_plot.columns[i], color=sns.color_palette('tab10')[i], fontsize=10)
+ax = plt.gca()
+ax.yaxis.set_major_formatter(PercentFormatter(decimals=0))
+plt.legend().remove()
+plt.xticks(rotation=45)
+plt.tight_layout()
+```
+![Trend of Top 5 Skills for Data Analysts in USA](3_Progetto/images/skills_trend_top5.svg)
+
+Insight Principali:
+- **Dominio incontrastato di SQL**: SQL si conferma la competenza più richiesta per tutto l'anno, mantenendosi costantemente sopra la soglia del 50% delle offerte di lavoro. Nonostante una leggera flessione verso fine anno, resta il requisito fondamentale del settore.
+- **Stabilità e crescita di Excel**: Excel occupa saldamente la seconda posizione. È interessante notare il trend positivo nell'ultimo trimestre (da ottobre a dicembre), dove recupera terreno suggerendo che la padronanza dei fogli di calcolo rimane un pilastro imprescindibile accanto a linguaggi più complessi.
+- **Competizione tra Python e Tableau**: Queste due competenze mostrano un andamento quasi sovrapponibile per gran parte dell'anno, oscillando tra il 25% e il 35%. Ciò indica che per un Data Analyst la capacità di programmazione (Python) e quella di visualizzazione dati (Tableau) hanno un peso specifico molto simile sul mercato.
+- **Power BI in crescita costante**: Sebbene sia all'ultimo posto tra le "Top 5", Power BI mostra una crescita graduale e una maggiore stabilità rispetto alla volatilità di Python. Questo suggerisce una crescente adozione degli strumenti dell'ecosistema Microsoft nelle aziende americane.
